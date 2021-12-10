@@ -1,0 +1,61 @@
+extends ../layout 
+
+block head 
+  link(rel="stylesheet" href="stylesheets/registros.css")
+
+block content 
+  .d-sm-flex.align-items-center.justify-content-between
+    h1.h3.mb-0.text-gray-800.text-light Configuración
+  .container
+    .row
+      .col-lg-6
+        .card(style={background: '#121212'})
+          .card-header.bg-primary.text-white
+            | Información Personal
+          .card-body
+            .form-group.mb-3
+              img(src=`${url}` width='60px' height='72px')
+            .form-group
+              label.text-light
+                | Usuario: 
+                strong= cuenta
+            br
+            .form-group
+              label.text-light
+                | Nombre: 
+                strong= usuario
+      .col-lg-6
+        .card(style={background: '#121212'})
+          .card-header.bg-primary.text-white
+            | Cambiar Contraseña
+          .card-body
+            form#form.p-3(action='' method='post' autocomplete='off')
+              .form-group
+                label.text-light Nueva Contraseña
+                input#password(style={background: '#121212', 'border-color':'#383D42'}).text-light.form-control(type='password' onkeypress='return /[a-z 0-9]/i.test(event.key)' name='password2' placeholder='Nueva Contraseña' required='')
+              br
+              .form-group
+                label.text-light Confirmar Contraseña
+                input#confpass(style={background: '#121212', 'border-color':'#383D42'}).text-light.form-control(type='password' onkeypress='return /[a-z 0-9]/i.test(event.key)' name='confpass2' placeholder='Confirmar Contraseña' required='')
+              br
+              div
+                button.btn.btn-primary(id="btnGuardar" type='button') Guardar
+      pre.text-light.
+              ⠀⠀           ⣠⣴⣶⣿⣿⣷⣶⣄⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⡟⠁⣰⣿⣿⣿⡿⠿⠻⠿⣿⣿⣿⣿⣧⠀⠀⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⠏⠀⣴⣿⣿⣿⠉⠀⠀⠀⠀⠀⠈⢻⣿⣿⣇⠀⠀⠀
+              ⠀⠀⠀⠀⢀⣠⣼⣿⣿⡏⠀⢠⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⡀⠀⠀
+              ⠀⠀⠀⣰⣿⣿⣿⣿⣿⡇⠀⢸⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡇⠀⠀
+              ⠀⠀⢰⣿⣿⡿⣿⣿⣿⡇⠀⠘⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣿⠁⠀⠀
+              ⠀⠀⣿⣿⣿⠁⣿⣿⣿⡇⠀⠀⠻⣿⣿⣿⣷⣶⣶⣶⣶⣶⣿⣿⣿⣿⠃⠀⠀⠀
+              ⠀⢰⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀
+              ⠀⢸⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠉⢉⣿⣿⠀⠀⠀⠀⠀⠀
+              ⠀⢸⣿⣿⣇⠀⣿⣿⣿⠀⠀⠀⠀⠀⢀⣤⣤⣤⡀⠀⠀⢸⣿⣿⣿⣷⣦⠀⠀⠀
+              ⠀⠀⢻⣿⣿⣶⣿⣿⣿⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣦⡀⠀⠉⠉⠻⣿⣿⡇⠀⠀
+              ⠀⠀⠀⠛⠿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠈⠹⣿⣿⣇⣀⠀⣠⣾⣿⣿⡇⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣦⣤⣤⣤⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⣿⣿⣿⣿⣿⣿⠿⠋⠉⠛⠋⠉⠉⠁⠀⠀⠀⠀
+              ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁
+block footer
+  script(src="javascripts/pages/configuracion.js")

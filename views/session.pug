@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+      link(rel="stylesheet" href="stylesheets/session.css")
+      meta(charset="UTF-8")
+      meta(http-equiv="X-UA-Compatible" content="IE=edge")
+      meta(name="viewport" content="width=device-width, initial-scale=1.0")
+      title= title
+      script(type="text/javascript" src="javascripts/jquery.js")
+      link(rel="stylesheet" href="stylesheets/toastr.css")
+      script(src='javascripts/toastr.js')
+      script(src='javascripts/md5.min.js')
+      link(rel="stylesheet" href="stylesheets/bootstrap.css")
+      link(rel="stylesheet" href="stylesheets/style.css")
+      link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css")
+      script(type="text/javascript" src="javascripts/bootstrap.js")
+  body
+    .wrapper.fadeInDown
+      #formContent
+        // Tabs Titles
+        // Icon
+        .fadeIn.first
+          img#icon(src='icons/person-badge.svg' alt='User Icon')
+        // Login Form
+        h5= message
+        if data 
+          if data.Success 
+            if data.Data.length 
+              h5 Bienvenido 
+                span= data.Data[0].nombre
+            else 
+              h5 Usuario o contraseña incorrecto, intente nuevamente
+          else 
+            h5 ha ocurrido un error, intente mas tarde
+            //h6= data.Message
+        
+        form(method="post" action="/login")
+          input#user.fadeIn.second(type='text' name='username' placeholder='Nombre de Usuario')
+          input#pwd.fadeIn.third(type='password' placeholder='Contraseña')
+          input#password.fadeIn.third(type='hidden' name='password' placeholder='Contraseña')
+          input.fadeIn.fourth(type='submit' value='Log In')
+  footer
+    script(src="javascripts/session.js")

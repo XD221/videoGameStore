@@ -1,0 +1,57 @@
+extends ../layout 
+
+block head 
+  link(rel="stylesheet" href="/stylesheets/registros.css")
+
+block content
+  .container.mt-5.mb-5
+  .col-md-10
+    h5= message
+    form#form.row(method="POST" action="/venta/guardar")
+      h6.col-6.form-input Fecha 
+        input#fecha.form-control(name='fecha' type='text' autocomplete="off" value=`${fecha}` readonly)
+      h6.col-6.form-input Total
+        input#total2.form-control(type='text' autocomplete="off" value='0 Bs.' readonly)   
+        input#total.form-control(name='total' hidden type='text' autocomplete="off" value='0' readonly) 
+      h6 Cliente 
+      .col-6.form-input
+        input#cliente.form-control(name="cliente" type='text' autocomplete="off" value=`${ clNombre }` readonly)
+        input#clienteID.form-control(name="clienteID" type='hidden' value=`${ clID }` readonly)
+      .col-6.form-input
+        div#btnCliente(class='btn btn-success' ) +
+      div.row(class="card mt-4")
+        div.d-flex(class="card-header")
+          div.col-10.justify-content-start.align-self-center
+            span
+              i(class="bi bi-table me-2") Productos Seleccionados
+          div.d-flex.justify-content-end
+            div#btnProducto(class='btn btn-success' ) Agregar Producto
+            div#submit.offset-2(class='btn btn-primary' ) Registrar Venta
+        div(class="card-body")
+          div(class="table-responsive")
+            table(id="tbl" class="table table-striped" style="width: 100%")
+              thead
+                tr
+                  th NOMBRE
+                  th CANTIDAD
+                  th PRECIO
+                  th CATEGORIA
+                  th MARCA
+                  th ACCION
+              tbody
+                if producto != undefined
+                  each val, key in producto 
+                    tr(id=`${ key }`) 
+                      td= val.nombre
+                      td= val.cantidad
+                      td.precio= (val.cantidad * val.precio).toFixed(1)
+                      td= val.categoria
+                      td= val.marca
+                      td(id=`${ key }`)
+                        div.btnDelete(class='btn btn-outline-primary btn-sm' id=`btnEliminar_${ key }`)
+                          img(src='/icons/trash.svg' alt='Eliminar')
+              tfoot
+
+block footer
+  script(src="/javascripts/pages/venta-agregar.js")
+  script(src="/javascripts/newDataTable.js")

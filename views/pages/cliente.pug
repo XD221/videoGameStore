@@ -1,0 +1,96 @@
+extends ../layout 
+
+block head 
+  link(rel="stylesheet" href="stylesheets/registros.css")
+
+block content
+  .container.mt-5.mb-5
+  .col-md-10
+    button(id="btnAgregar" type="button" class="btn btn-primary") Agregar Cliente 
+    div(class="mt-3")
+      h4 
+        | ■ Para editar un Cliente seleccione el nombre en azul del mismo  
+    div(class="modal fade" id="agregar" tabindex="-1" aria-labelledby="agregar" aria-hidden="true")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title" id="exampleModalLabel")
+            button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+          div#form(class="modal-body")
+            h6 CI
+            .row
+              .col-8
+                .form-input
+                  input#ci.form-control(type='text' autocomplete="off" 
+                  oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);' 
+                  maxlength='10' onkeypress='return /[0-9]/i.test(event.key)'
+                  oncut='return false' oncopy='return false' onpaste='return false' ondrag='return false' ondrop='return false')
+              .col-4.align-self-center
+                select#pais.form-select
+                  option(selected value='SC') SC
+                  option(value='LP') LP
+                  option(value='CB') CB
+                  option(value='CH') CH
+                  option(value='PO') PO
+                  option(value='OR') OR
+                  option(value='BE') BE
+                  option(value='TR') TR
+                  option(value='PA') PA
+            h6 Nombre 
+            .form-input
+              input#nombre.form-control(type='text' autocomplete="off"
+              oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);' 
+              maxlength='25' onkeypress='return /[a-z A-Z]/i.test(event.key)'
+              oncut='return false' oncopy='return false' onpaste='return false' ondrag='return false' ondrop='return false')
+            h6 Apellido Paterno 
+            .form-input
+              input#apPaterno.form-control(type='text' autocomplete="off"
+              oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);' 
+              maxlength='25' onkeypress='return /[a-Z A-Z]/i.test(event.key)'
+              oncut='return false' oncopy='return false' onpaste='return false' ondrag='return false' ondrop='return false')
+            h6 Apellido Materno 
+            .form-input
+              input#apMaterno.form-control(type='text' autocomplete="off"
+              oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);' 
+              maxlength='25' onkeypress='return /[a-z A-Z]/i.test(event.key)'
+              oncut='return false' oncopy='return false' onpaste='return false' ondrag='return false' ondrop='return false')
+            h6 Telefono 
+              input#telefono.form-control(type='text' autocomplete="off"
+              oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);' 
+              maxlength='8' onkeypress='return /[0-9]/i.test(event.key)'
+              oncut='return false' oncopy='return false' onpaste='return false' ondrag='return false' ondrop='return false')
+          div(class="modal-footer")
+            button(id="btnCancelar" type="button" class="btn btn-secondary" data-bs-dismiss="modal") Cerrar
+            button(id="btnGuardar" type="button" class="btn btn-primary") Guardar
+            button(id="btnEditar" type="button" class="btn btn-primary") Modificar
+    div(class="card mt-4")
+      div(class="card-header")
+        span 
+          i(class="bi bi-table me-2") Registro de Clientes
+      div(class="card-body")
+        div(class="table-responsive")
+          table(id="tbl" class="table table-striped data-table" style="width: 100%")
+            thead
+              tr
+                th CI
+                th NOMBRE
+                th APELLIDO PATERNO
+                th APELLIDO MATERNO
+                th TELEFONO
+                th ACCION
+            tbody 
+            tfoot
+    div(class="modal fade" id="eliminar" tabindex="-1" aria-labelledby="eliminar" aria-hidden="true")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title" id="exampleModalLabel")
+            button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+          div(class="modal-body")
+            p.text-mensaje-modal
+          div(class="modal-footer")
+            button(id="btnEliminarCancelar" type="button" class="btn btn-secondary" data-bs-dismiss="modal") Cerrar
+            button(id="btnEliminarAceptar" type="button" class="btn btn-primary") Aceptar
+
+block footer
+  script(src="javascripts/pages/cliente.js")

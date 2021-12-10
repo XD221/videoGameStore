@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    script(type="text/javascript" src="/javascripts/jquery.js")
+    link(rel="stylesheet" href="/stylesheets/toastr.css")
+    script(src='/javascripts/toastr.js')
+    link(rel="stylesheet" href="/stylesheets/bootstrap.css")
+    link(rel="stylesheet" href="/stylesheets/style.css")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css")
+    script(type="text/javascript" src="/javascripts/bootstrap.js")
+    block head
+      
+  body
+    include header
+    include sidebar
+    main(class="mt-2 pt-2")
+      block content
+  //- no cambie eso, eso funciona para todas las paginas no solo para el index:v
+  //- block se refiere donde se ubicara el codigo, el nombre tiene 
+  //- que considir en ambos extremos, eso cuando se usa extend
+  //- include es importar un archivo, practicamente cargar todo el archivo pug
+
+  footer
+    script(src='/javascripts/chart.min.js')
+    script(src='/javascripts/bootstrap.bundle.min.js')
+    script(src='/javascripts/bootstrap.js')
+    script(src='/javascripts/dataTable/datatables.min.js')
+    script(src='/javascripts/dataTable/Buttons-2.0.1/js/dataTables.buttons.js')
+    script(src='/javascripts/dataTable/ColReorder-1.5.5/js/dataTables.colReorder.js')
+    script(src='/javascripts/dataTable/Responsive-2.2.9/js/dataTables.responsive.js')
+    script(src='/javascripts/script.js')
+    script(src='/javascripts/utiles.js')
+    link(rel="stylesheet", href="/javascripts/dataTable/datatables.css")
+    
+    block footer 

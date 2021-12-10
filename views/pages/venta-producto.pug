@@ -1,0 +1,57 @@
+extends ../layout 
+
+block head 
+  link(rel="stylesheet" href="/stylesheets/registros.css")
+
+block content
+  .container.mt-5.mb-5
+  .col-md-10
+    h5= message
+    form.form.row(method="POST" action="/venta/agregar")
+      input(type="hidden" name="clID" value=`${ clID }` readonly) 
+      input(type="hidden" name="clNombre" value=`${ clNombre }` readonly)
+      .col-3
+        input.form-control(type="submit" class='btn btn-dark' value="Volver" )
+    div(class="card mt-4")
+      div(class="card-header")
+        span 
+          i(class="bi bi-table me-2") Seleccionar Producto
+      div(class="card-body")
+        div(class="table-responsive")
+          table(id="tbl" class="table table-striped" style="width: 100%")
+            thead
+              tr
+                th IMAGEN
+                th NOMBRE
+                th PRECIO DE VENTA
+                th CANTIDAD
+                th CATEGORIA
+                th MARCA
+                th ACCION
+            tbody
+              each val in data
+                tr(id=`${val.id}`) 
+                  td
+                    img(src=`${ val.urlIMG }` width="80" height="80" )
+                  td= val.nombre
+                  td= val.precio
+                  td 
+                    input(type='number' value='0' onkeypress='return /[0-9]/i.test(event.key)' oninput="javascript: if((parseInt(this.value.length) == 2) && ((parseInt(this.value.substr(0, 1)) == 0 && isNaN(this.value.substr(1, 1)) == false))){ this.value = this.value.substr(1); } if(parseInt(this.value.length) <= parseInt(0)){ this.value = 0; } if(parseInt(this.value) < parseInt(0)){ this.value = 0; } if(parseInt(this.value) > parseInt(this.maxLength)) this.value = this.maxLength;" maxLength=`${val.cantidad}` )
+                  td= val.categoria
+                  td= val.marca
+                  td 
+                    form.form(method="POST" action="/venta/agregar")
+                      div.submit.form-control(class='btn btn-outline-success' ) Agregar
+                      input(type="hidden" name="prodID" value=`${ val.id }` readonly) 
+                      input(type="hidden" name="prodNombre" value=`${ val.nombre }` readonly) 
+                      input.cantidad(type="hidden" name="cantidad" value='0' readonly)
+                      input(type="hidden" name="precio" value=`${ val.precio }` readonly)
+                      input(type="hidden" name="clNombre" value=`${ clNombre }` readonly)
+                      input(type="hidden" name="clID" value=`${ clID }` readonly)
+                      input(type="hidden" name="categoria" value=`${ val.categoria }` readonly)
+                      input(type="hidden" name="marca" value=`${ val.marca }` readonly)
+            tfoot
+
+block footer
+  script(src="/javascripts/pages/venta-producto.js")
+  script(src="/javascripts/newDataTable.js")
