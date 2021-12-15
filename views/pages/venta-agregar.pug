@@ -15,17 +15,17 @@ block content
         input#total.form-control(name='total' hidden type='text' autocomplete="off" value='0' readonly) 
       h6 Cliente 
       .col-6.form-input
-        input#cliente.form-control(name="cliente" type='text' autocomplete="off" value=`${ clNombre }` readonly)
-        input#clienteID.form-control(name="clienteID" type='hidden' value=`${ clID }` readonly)
+        input#cliente.form-control(name="cliente" type='text' autocomplete="off" value='' readonly)
+        input#clienteID.form-control(name="clienteID" type='hidden' value='' readonly)
       .col-6.form-input
-        div#btnCliente(class='btn btn-success' ) +
+        button#btnCliente(type="button" class='btn btn-success' data-bs-toggle="modal" data-bs-target="#modalCliente" ) +
       div.row(class="card mt-4")
         div.d-flex(class="card-header")
           div.col-10.justify-content-start.align-self-center
             span
               i(class="bi bi-table me-2") Productos Seleccionados
           div.d-flex.justify-content-end
-            div#btnProducto(class='btn btn-success' ) Agregar Producto
+            button#btnProducto(type="button" class='btn btn-success') Agregar Producto
             div#submit.offset-2(class='btn btn-primary' ) Registrar Venta
         div(class="card-body")
           div(class="table-responsive")
@@ -39,19 +39,99 @@ block content
                   th MARCA
                   th ACCION
               tbody
-                if producto != undefined
-                  each val, key in producto 
-                    tr(id=`${ key }`) 
+                if data != undefined
+                  each val, key in data 
+                    tr(id=`row_${ key }`) 
                       td= val.nombre
                       td= val.cantidad
-                      td.precio= (val.cantidad * val.precio).toFixed(1)
+                      td= (val.cantidad * val.precio).toFixed(1)
                       td= val.categoria
                       td= val.marca
                       td(id=`${ key }`)
                         div.btnDelete(class='btn btn-outline-primary btn-sm' id=`btnEliminar_${ key }`)
                           img(src='/icons/trash.svg' alt='Eliminar')
               tfoot
+    #modalCliente.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog(style="max-width: 650px;")
+          .modal-content
+            .modal-header
+              h5#staticBackdropLabel.modal-title Seleccionar Cliente
+              button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+              div(class="card mt-4")
+                div(class="card-header")
+                  span 
+                    i(class="bi bi-table me-2") Seleccionar Cliente
+                div(class="card-body")
+                  div(class="table-responsive")
+                    table(id="tblProveedor" class="table table-striped" style="width: 100%")
+                      thead
+                        tr
+                          th CI
+                          th NOMBRE
+                          th APELLIDO
+                          th TELEFONO
+                          th ACCION
+                      tbody
+                        each val in cliente 
+                          tr(id=`${val.id}`) 
+                            td= val.ci
+                            td= val.nombre
+                            td= val.apPaterno + ' ' + val.apMaterno
+                            td= val.telefono
+                            td 
+                              button.btnAgregarCliente.form-control(type="button" class='btn btn-outline-success' data-bs-dismiss="modal" ) Agregar
+                              input(type="hidden" name="clID" value=`${ val.id }` readonly) 
+                              input(type="hidden" name="clNombre" value=`${ val.nombre }` readonly)
+                      tfoot
+            .modal-footer
+              button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+    #modalProducto(class="modal fade" tabindex="-1" aria-labelledby="eliminar" aria-hidden="true")
+        .modal-dialog(style="max-width: 1000px;")
+          .modal-content
+            .modal-header
+              h5#staticBackdropLabel.modal-title Seleccionar Producto
+              button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+              div(class="card mt-4")
+                div(class="card-header")
+                  span 
+                    i(class="bi bi-table me-2") Seleccionar Producto
+                div(class="card-body")
+                  div(class="table-responsive")
+                    table(id="tblProducto" class="table table-striped" style="width: 100%")
+                      thead
+                        tr
+                          th IMAGEN
+                          th NOMBRE
+                          th PRECIO DE COMPRA
+                          th CANTIDAD
+                          th CATEGORIA
+                          th MARCA
+                          th ACCION
+                      tbody
+                        each val in producto
+                          tr(id=`${val.id}`) 
+                            td
+                              img(src=`${ val.urlIMG }` width="80" height="80" )
+                            td= val.nombre
+                            td= val.precio
+                            td 
+                              input(type='number' value='0' onkeypress='return /[0-9]/i.test(event.key)' oninput="javascript: if((parseInt(this.value.length) == 2) && ((parseInt(this.value.substr(0, 1)) == 0 && isNaN(this.value.substr(1, 1)) == false))){ this.value = this.value.substr(1); } if(parseInt(this.value.length) <= parseInt(0)){ this.value = 0; } if(parseInt(this.value) < parseInt(0)){ this.value = 0; }" )
+                            td= val.categoria
+                            td= val.marca
+                            td 
+                              button.btnAgregar.form-control(type="button" class='btn btn-outline-success' ) Agregar
+                              input(type="hidden" name="prodID" value=`${ val.id }` readonly) 
+                              input(type="hidden" name="prodNombre" value=`${ val.nombre }` readonly) 
+                              input(type="hidden" name="precio" value=`${ val.precio }` readonly)
+                              input(type="hidden" name="clNombre" value=`${ clNombre }` readonly)
+                              input(type="hidden" name="clID" value=`${ clID }` readonly)
+                              input(type="hidden" name="categoria" value=`${ val.categoria }` readonly)
+                              input(type="hidden" name="marca" value=`${ val.marca }` readonly)
+                      tfoot
+            .modal-footer
+              button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
 
 block footer
   script(src="/javascripts/pages/venta-agregar.js")
-  script(src="/javascripts/newDataTable.js")

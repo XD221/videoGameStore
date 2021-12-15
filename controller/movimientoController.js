@@ -23,22 +23,44 @@ module.exports = {
   },
 
   agregarCompra: function (req, res) {
-    if(req.body.prodID != undefined) {
-      req.user.compra[(req.body.prodID).toString()] = { nombre: req.body.prodNombre, precio: parseFloat(req.body.precio), cantidad: req.body.cantidad, categoria: req.body.categoria, marca: req.body.marca };
-    }
-    res.locals.producto = req.user.compra;
-    res.render("compra-agregar", { title: 'Agregar Compra', prNombre: (req.body.prNombre === undefined) ? "" : req.body.prNombre, prID: (req.body.prID === undefined) ? "" : req.body.prID});
+    res.locals.data = req.user.compra;
+    modelAux
+    .obtenerDisponible()
+    .then((proveedor) => {
+      modelAux2
+      .obtenerCompra()
+      .then((producto) => {
+        res.render("compra-agregar", { title: 'Agregar Compra', proveedor: proveedor, producto: producto});
+      })
+      .catch((err) => {
+        res.render("compra-agregar", { title: 'Agregar Compra', proveedor: proveedor, producto: []});
+      }); 
+    })
+    .catch((err) => {
+      res.render("compra-agregar", { title: 'Agregar Compra', proveedor: [], producto: []});
+    });
   },
 
   agregarVenta: function (req, res) {
-    if(req.body.prodID != undefined) {
-      req.user.venta[(req.body.prodID).toString()] = { nombre: req.body.prodNombre, precio: req.body.precio, cantidad: req.body.cantidad, categoria: req.body.categoria, marca: req.body.marca };
-    }
-    res.locals.producto = req.user.venta;
-    res.render("venta-agregar", { title: 'Agregar Venta', clNombre: (req.body.clNombre === undefined) ? "" : req.body.clNombre, clID: (req.body.clID === undefined) ? "" : req.body.clID});
+    res.locals.data = req.user.venta;
+    modelAux3
+    .obtenerConAnonimo()
+    .then((cliente) => {
+      modelAux2
+      .obtenerReal()
+      .then((producto) => {
+        res.render("venta-agregar", { title: 'Agregar Venta', cliente: cliente, producto: producto });
+      })
+      .catch((err) => {
+        res.render("venta-agregar", { title: 'Agregar Venta', cliente: cliente, producto: [] });
+      }); 
+    })
+    .catch((err) => {
+      res.render("venta-agregar", { title: 'Agregar Venta', cliente: [], producto: [] });
+    });
   },
 
-  eliminarCompra: function (req, res) {
+  eliminarProductoCompra: function (req, res) {
     if((req.body.prodID).toString() in req.user.compra){
       delete req.user.compra[(req.body.prodID).toString()];
       res.json({ Success: true });
@@ -47,9 +69,27 @@ module.exports = {
     }
   },
 
-  eliminarVenta: function (req, res) {
+  agregarProductoCompra: function (req, res) {
+    if(req.body.prodID != undefined) {
+      req.user.compra[(req.body.prodID).toString()] = { nombre: req.body.prodNombre, precio: parseFloat(req.body.precio), cantidad: req.body.cantidad, categoria: req.body.categoria, marca: req.body.marca };
+      res.json({ Success: true });
+    }else{
+      res.json({ Success: false });
+    }
+  },
+
+  eliminarProductoVenta: function (req, res) {
     if((req.body.prodID).toString() in req.user.venta){
       delete req.user.venta[(req.body.prodID).toString()];
+      res.json({ Success: true });
+    }else{
+      res.json({ Success: false });
+    }
+  },
+
+  agregarProductoVenta: function (req, res) {
+    if(req.body.prodID != undefined) {
+      req.user.venta[(req.body.prodID).toString()] = { nombre: req.body.prodNombre, precio: req.body.precio, cantidad: req.body.cantidad, categoria: req.body.categoria, marca: req.body.marca };
       res.json({ Success: true });
     }else{
       res.json({ Success: false });
@@ -85,145 +125,6 @@ module.exports = {
         });
   },
 
-  getSeleccionarProveedor: function (req, res) {
-    modelAux
-    .obtenerDisponible()
-    .then((filas) => {
-      res.render("compra-proveedor", { title: 'Seleccionar Proveedor', data: filas, prNombre: (req.body.proveedor === undefined) ? "" : req.body.proveedor, prID: (req.body.proveedorID === undefined) ? "" : req.body.proveedorID });
-    })
-    .catch((err) => {
-      res.render("compra-proveedor", { title: 'Seleccionar Proveedor', message: err.message, prNombre: (req.body.proveedor === undefined) ? "" : req.body.proveedor, prID: (req.body.proveedorID === undefined) ? "" : req.body.proveedorID });
-    });
-  },
-
-  getSeleccionarCliente: function (req, res) {
-    modelAux3
-    .obtenerConAnonimo()
-    .then((filas) => {
-      res.render("venta-cliente", { title: 'Seleccionar Cliente', data: filas, clNombre: (req.body.cliente === undefined) ? "" : req.body.cliente, clID: (req.body.clienteID === undefined) ? "" : req.body.clienteID });
-    })
-    .catch((err) => {
-      res.render("venta-cliente", { title: 'Seleccionar Cliente', message: err.message, clNombre: (req.body.cliente === undefined) ? "" : req.body.cliente, clID: (req.body.clienteID === undefined) ? "" : req.body.clienteID });
-    });
-  },
-
-  getSeleccionarProducto: function (req, res, typeofData) {
-    if(typeofData == 1){
-      modelAux2
-      .obtenerCompra()
-      .then((filas) => {
-        res.render("compra-producto", { title: 'Agregar Producto', data: filas, prNombre: (req.body.proveedor === undefined) ? "" : req.body.proveedor, prID: (req.body.proveedorID === undefined) ? "" : req.body.proveedorID });
-      })
-      .catch((err) => {
-        res.render("compra-producto", { title: 'Agregar Producto', message: err.message, prNombre: (req.body.proveedor === undefined) ? "" : req.body.proveedor, prID: (req.body.proveedorID === undefined) ? "" : req.body.proveedorID });
-      }); 
-    } else if(typeofData == 2){
-      modelAux2
-      .obtenerReal()
-      .then((filas) => {
-        res.render("venta-producto", { title: 'Agregar Producto', data: filas, clNombre: (req.body.cliente === undefined) ? "" : req.body.cliente, clID: (req.body.clienteID === undefined) ? "" : req.body.clienteID });
-      })
-      .catch((err) => {
-        res.render("venta-producto", { title: 'Agregar Producto', message: err.message, clNombre: (req.body.cliente === undefined) ? "" : req.body.cliente, clID: (req.body.clienteID === undefined) ? "" : req.body.clienteID });
-      }); 
-
-    }
-  },
-
-  //guardar: function (req, res, typeofData) {
-  //  var data;
-  //    if (typeofData == 1) {
-  //      data = {
-  //        fecha: req.body.fecha,
-  //        total: req.body.total,
-  //        id_proveedor: req.body.proveedorID,
-  //        id_empleado: req.user.id.split('.')[0],
-  //      };
-  //    } else if (typeofData == 2) {
-  //      data = {
-  //        fecha: req.body.fecha,
-  //        total: req.body.total,
-  //        id_cliente: req.body.clienteID,
-  //        id_empleado: req.user.id.split('.')[0],
-  //      };
-  //    }
-  //    model
-  //    .guardar(data, typeofData)
-  //    .then((result) => {
-  //      if (typeofData == 1) {
-  //        for (var key in req.user.compra) {
-  //          var element = req.user.compra[key];
-  //          data = {
-  //            id_movimiento: result.id,
-  //            id_producto: parseInt(key),
-  //            cantidad: parseInt(element.cantidad),
-  //            precio: (parseInt(element.precio) * parseInt(element.cantidad))
-  //          };
-  //          model
-  //          .guardarDetalle(data)
-  //          .then((result2) => {
-  //            var lastID = result2.id;
-  //          })
-  //          .catch((err) => {
-  //            res.json({ Success: false, Message: err.message });
-  //            return;
-  //          });
-  //          data = {
-  //            cantidad: parseInt(element.cantidad),
-  //            id: parseInt(key)
-  //          };
-  //          modelAux2
-  //          .incrementar(data)
-  //          .then((result2) => {
-  //            var lastID = result2.id;
-  //          })
-  //          .catch((err) => {
-  //            res.json({ Success: false, Message: err.message });
-  //            return;
-  //          });
-  //        }
-  //        req.user.compra = {};
-  //        res.redirect(301,'/compra');
-  //      } else if (typeofData == 2) {
-  //        for (var key in req.user.venta) {
-  //          var element = req.user.venta[key];
-  //          data = {
-  //            id_movimiento: result.id,
-  //            id_producto: parseInt(key),
-  //            cantidad: parseInt(element.cantidad),
-  //            precio: (parseInt(element.precio) * parseInt(element.cantidad))
-  //          };
-  //          model
-  //          .guardarDetalle(data)
-  //          .then((result2) => {
-  //            var lastID = result2.id;
-  //          })
-  //          .catch((err) => {
-  //            res.json({ Success: false, Message: err.message });
-  //            return;
-  //          });
-  //          data = {
-  //            cantidad: parseInt(element.cantidad),
-  //            id: parseInt(key)
-  //          };
-  //          modelAux2
-  //          .decrementar(data)
-  //          .then((result2) => {
-  //            var lastID = result2.id;
-  //          })
-  //          .catch((err) => {
-  //            res.json({ Success: false, Message: err.message });
-  //            return;
-  //          });
-  //        }
-  //        req.user.venta = {};
-  //        res.redirect(301,'/venta');
-  //      }
-  //    })
-  //    .catch((err) => {
-  //      res.json({ Success: false, Message: err.message });
-  //    });
-  //},
   guardar: function (req, res, typeofData) {
     var redirectValue;
     var items;

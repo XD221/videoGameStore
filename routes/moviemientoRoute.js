@@ -12,21 +12,9 @@ router.get('/', function(req, res){
         return controller.getVenta(req, res)
     }
 });
-router.post('/seleccionar-proveedor', function(req, res){
-    if(req.baseUrl == '/compra'){
-        return controller.getSeleccionarProveedor(req, res);
-    }
-});
 router.post('/seleccionar-cliente', function(req, res){
     if(req.baseUrl == '/venta'){
         return controller.getSeleccionarCliente(req, res);
-    }
-});
-router.post('/seleccionar-producto', function(req, res){
-    if(req.baseUrl == '/compra'){
-        return controller.getSeleccionarProducto(req, res, 1);
-    }else if(req.baseUrl == '/venta'){
-        return controller.getSeleccionarProducto(req, res, 2);
     }
 });
 router.post('/agregar', function(req, res) {
@@ -36,11 +24,18 @@ router.post('/agregar', function(req, res) {
         return controller.agregarVenta(req, res);
     }
 });
+router.put('/agregar', function(req, res) {
+    if(req.baseUrl == '/compra'){
+        return controller.agregarProductoCompra(req, res);
+    }else if(req.baseUrl == '/venta'){
+        return controller.agregarProductoVenta(req, res);
+    }
+});
 router.delete('/agregar', function(req, res) {
     if(req.baseUrl == '/compra'){
-        return controller.eliminarCompra(req, res);
+        return controller.eliminarProductoCompra(req, res);
     }else if(req.baseUrl == '/venta'){
-        return controller.eliminarVenta(req, res);
+        return controller.eliminarProductoVenta(req, res);
     }
 });
 router.get('/obtener', function(req, res){

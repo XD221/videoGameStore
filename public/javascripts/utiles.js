@@ -1,4 +1,3 @@
-
 Array.prototype.remove = function (item) {
     var i = this.indexOf(item);
     if (i != -1)
@@ -42,7 +41,7 @@ function agregarFila(elemento, fila, index){
     var last_row = tabla
         .row
         .add( fila ).node();
-    tabla.draw( false );
+    tabla.draw( );
     last_row.id ='row_' + index;
     return last_row;
 }
@@ -51,7 +50,15 @@ function eliminarFila(elemento, fila){
     var tabla = $('#' + elemento).DataTable();
     tabla
     .row( fila )
-    .remove()
+    .empty()
+    .draw( false );
+}
+
+function actualizarFila(elemento, fila, change){
+    var tabla = $('#' + elemento).DataTable();
+    tabla
+    .row( fila )
+    .data(change)
     .draw();
 }
 

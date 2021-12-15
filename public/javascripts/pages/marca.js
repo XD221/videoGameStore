@@ -11,7 +11,6 @@ function mostrarModal() {
     .find(".modal-body")
     .css({ "min-height": 150 + "px" });
   $(modal).modal({ backdrop: "static", keyboard: false });
-  $(modal).modal("show");
 }
 
 function eliminarExitoso(respuesta, e, elemento) {
