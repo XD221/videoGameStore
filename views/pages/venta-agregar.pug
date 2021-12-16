@@ -7,6 +7,9 @@ block content
   .container.mt-5.mb-5
   .col-md-10
     h5= message
+    form.form.row(method="GET" action="/venta")
+      .col-3
+        input.form-control(type="submit" class='btn btn-dark' value="Salir" )
     form#form.row(method="POST" action="/venta/guardar")
       h6.col-6.form-input Fecha 
         input#fecha.form-control(name='fecha' type='text' autocomplete="off" value=`${fecha}` readonly)

@@ -55,5 +55,10 @@ router.post('/guardar', function(req, res){
         return controller.guardar(req, res, 2);
     }
 }); 
+router.post('/anular', function(req, res){
+    if(req.baseUrl == '/compra'){
+        return controller.anularCompra(req, res);
+    }
+}); 
 
 module.exports = router;

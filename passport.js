@@ -12,7 +12,6 @@ passport.use(new passportLocal( function(username, password, done){
   var resultado = controller.obtener(username, password, passport);
   resultado.then((data) => {
     if(data.length > 0){
-      //return done(null, new user(data[0].id_empleado + "." + md5(password),username, data[0].nombre + ' ' + data[0].paterno, data[0].url, data[0].id_tipoUsuario));
       return done(null, {id: data[0].id_empleado + "." + md5(password), usuario: username, nombre: data[0].nombre + ' ' + data[0].paterno, url: data[0].url, compra: {}, venta: {} });
     }
     done(null, false);

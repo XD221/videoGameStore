@@ -32,7 +32,7 @@ block content
         div(class="modal-content")
           div(class="modal-header")
             h5(class="modal-title" id="exampleModalLabel")
-            button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+            button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#modalTable').find('#btnAnnularDetail').prop( 'disabled', true )" )
           div(class="modal-body")
             div(class="card mt-4")
               div(class="card-header")
@@ -50,7 +50,9 @@ block content
                     tbody
                     tfoot
           div(class="modal-footer")
-            button(id="btnCancelDetail" type="button" class="btn btn-secondary" data-bs-dismiss="modal") Cerrar
+            button(id="btnAnnularDetail" type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="$('#modalTable').find('#btnAnnularDetail').prop( 'disabled', true )" disabled) Anular Compra
+            button(id="btnCancelDetail" type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="$('#modalTable').find('#btnAnnularDetail').prop( 'disabled', true )" ) Cerrar
+
 
 block footer
   script(src="javascripts/pages/compra.js")

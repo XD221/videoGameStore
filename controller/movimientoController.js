@@ -127,16 +127,6 @@ module.exports = {
 
   guardar: function (req, res, typeofData) {
     var redirectValue;
-    var items;
-    if (typeofData == 1) {
-      redirectValue = '/compra';
-      items = req.user.compra;
-      req.user.compra = {};
-    } else if (typeofData == 2) {
-      redirectValue = '/venta';
-      items = req.user.venta;
-      req.user.venta = {};
-    }
     return new promise((resolve, reject) => {
       transaction().then((tt) => {
         existTransaction().then(() => {
@@ -162,8 +152,8 @@ module.exports = {
           queryTransaction(sql, params, tt, 0).then(async (data) => {
             var id_movimiento = data[0];
             if (typeofData == 1) {
-              for (var key in items) {
-                var element = items[key];
+              for (var key in req.user.compra) {
+                var element = req.user.compra[key];
                 sql = "INSERT INTO detalleMovimiento (id_movimiento, id_producto, cantidad, precio) VALUES (?,?,?,?)";
                 params = [
                   id_movimiento,
@@ -193,8 +183,8 @@ module.exports = {
               tt.commit();
               resolve( id_movimiento );
             } else if (typeofData == 2) {
-              for (var key in items) {
-                var element = items[key];
+              for (var key in req.user.venta) {
+                var element = req.user.venta[key];
                 sql = "INSERT INTO detalleMovimiento (id_movimiento, id_producto, cantidad, precio) VALUES (?,?,?,?)";
                 params = [
                   id_movimiento,
@@ -238,6 +228,21 @@ module.exports = {
         reject(err);
       });
     }).then((result) => {
+      if (typeofData == 1) {
+        redirectValue = '/compra';
+        for (var prop in req.user.compra) {
+          if (req.user.compra.hasOwnProperty(prop)) {
+              delete req.user.compra[prop];
+          }
+        }
+      } else if (typeofData == 2) {
+        redirectValue = '/venta';
+        for (var prop in req.user.venta) {
+          if (req.user.venta.hasOwnProperty(prop)) {
+              delete req.user.venta[prop];
+          }
+        }
+      }
       res.redirect(301, redirectValue);
     }).catch((err) => {
       res.json({ Success: false, Message: err.message });
@@ -256,4 +261,70 @@ module.exports = {
         res.json({ Success: false, Message: err.message });
       });
   },
+
+  anularCompra(req, res){
+    return new promise((resolve, reject) => {
+      transaction().then((tt) => {
+        existTransaction().then(() => {
+          var sql = "UPDATE movimiento SET estado=1 WHERE id=? and estado=0";
+          var params = [
+            req.body.id
+          ];
+          queryTransaction(sql, params, tt, 1).then(async (mov) => {
+            if(mov[1] <= 0){
+              console.error("Query error: Does not meet the necessary requirements");
+              tt.rollback();
+              reject( `El movimiento ya esta Anulado` );
+            }else{
+              sql = "SELECT d.cantidad, d.id_producto, p.nombre as producto FROM detalleMovimiento as d, producto as p WHERE id_movimiento=? AND p.id = d.id_producto";
+              params = [
+                req.body.id
+              ];
+              await queryTransaction(sql, params, tt, 2).then(async (detalle) => {
+                for(d of detalle){
+                  sql = "UPDATE producto SET cantidad = cantidad - ? WHERE cantidad >= ? AND id=?";
+                  params = [
+                    d.cantidad,
+                    d.cantidad,
+                    d.id_producto
+                  ];
+                  await queryTransaction(sql, params, tt, 1).then(async (result) => {
+                    if(result[1] <= 0){
+                      console.error("Query error: Does not meet the necessary requirements");
+                      tt.rollback();
+                      reject( `La cantidad del producto "${d.producto}" no esta disponible` );
+                    }
+                  }).catch((err) => {
+                    console.error('Query error: ' + err);
+                    tt.rollback();
+                    reject(err.message);
+                  });
+                }
+                tt.commit();
+                resolve( req.body.id );
+              }); 
+            }
+          }).catch((err) => {
+            console.error('Query error: ' + err);
+            tt.rollback();
+            reject(err.message);
+          });
+        }).catch((err) => {
+          console.error("Error in the sql");
+          console.error(err.message);
+          tt.rollback();
+          reject(err.message);
+        });
+      }).catch((err) => {
+        console.error('Query error: ' + err);
+        tt.rollback();
+        reject(err.message);
+      });
+    }).then((result) => {
+      res.json({ Success: true });
+    }).catch((err) => {
+      res.json( { Success: false, Message: err } );
+    });
+  },
+
 };

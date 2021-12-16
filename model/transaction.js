@@ -4,7 +4,7 @@ const promise = require("bluebird");
 const t = new Sequelize({
     dialect: 'sqlite',
     dialectOptions: {connectTimeout: 1000},
-    storage: ".\\DB\\dbGame.db",
+    storage: ".\\DB\\dbGame.SQLITE",
     autocommit: false
 });
 
@@ -28,15 +28,18 @@ const queryTransaction = (sql, params, tt, type) => {
         queryType = t.QueryTypes.INSERT;
     }else if(type == 1){
         queryType = t.QueryTypes.UPDATE;
+    }else if(type == 2){
+        queryType = t.QueryTypes.SELECT;
     }
     var stack = [];
     for(x = params.length - 1; x >= 0 ; x--) {
-        params[x] = params[x].toString().toLowerCase().replace('--', '');
-        params[x] = params[x].toString().toLowerCase().replace('//', '');
-        params[x] = params[x].toString().toLowerCase().replace("'", '');
-        params[x] = params[x].toString().toLowerCase().replace('"', '');
-        params[x] = params[x].toString().toLowerCase().replace(' AND ', '');
-        params[x] = params[x].toString().toLowerCase().replace(' OR ', '');
+        params[x] = params[x] + '';
+        params[x] = params[x].toLowerCase().replace('--', '');
+        params[x] = params[x].toLowerCase().replace('//', '');
+        params[x] = params[x].toLowerCase().replace("'", '');
+        params[x] = params[x].toLowerCase().replace('"', '');
+        params[x] = params[x].toLowerCase().replace(' AND ', '');
+        params[x] = params[x].toLowerCase().replace(' OR ', '');
         stack.push(params[x]);
     }
     var sql = sql.split('');

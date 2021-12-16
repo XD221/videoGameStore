@@ -3,20 +3,20 @@ var _datos;
 function mostrarDatos() {
   limpiarTabla("tbl");
   $.each(_datos, function (index, elemento) {
-    //var fila = $('<tr>').attr('id', elemento.id);
     var datoFila = [
       elemento.fecha,
       elemento.total + " Bs.",
       elemento.proveedor,
       elemento.empleado,
-      (elemento.estado == 0)? 'Realizada':'Cancelada'
+      (elemento.estado == 0)? 'Realizada':'Anulada'
     ];
     var ultimaFila = agregarFila("tbl", datoFila, elemento.id);
     $(ultimaFila).find('td:first a').click(function(){
     //$('#tbl tbody').off().on('click', '.spanHyperLink', function(){
+      var id = $(this).parent().parent().attr('id').split('_')[1];
       var url = "/compra/obtenerDetalle";
       var tipo = "POST";
-      var datos = { id: $(this).parent().parent().attr('id').split('_')[1] };
+      var datos = { id: id };
       var tipoDatos = "JSON";
       solicitudAjax(url, (resultado) => {
         if (resultado.Success) {
@@ -30,19 +30,22 @@ function mostrarDatos() {
             ];
             var ultimaFila = agregarFila("tblModal", datoFila, value.id);
           });
-          mostrarDatos();
           toastr.success("Datos adquirido exitosamente");
         } else {
           toastr.error(resultado.Message);
         }
       }, datos, tipoDatos, tipo);
       var modal = "#modalTable";
+      $(modal).attr('data', id);
       $(modal).find('.modal-title').html('Vista detalle de compra')
       $(modal)
         .find(".modal-dialog")
         .css({ "max-width": 50 + "vw" })
         .css({ "min-height": 100 + "%" });
       $(modal).modal({ backdrop: "static", keyboard: false });
+      if($(this).parents("tr").find('td:last').html() == 'Realizada'){
+        $(modal).find('#btnAnnularDetail').prop( "disabled", false );
+      }
       $(modal).modal("show");
     });
   });
@@ -69,6 +72,23 @@ function init() {
 $(document).ready(function () {
   init();
 
+  $('#btnAnnularDetail').click(function() {
+    var modal = "#modalTable";
+    var id = $(modal).attr('data');
+    var url = "/compra/anular";
+    var tipo = "POST";
+    var datos = { id: id  };
+    var tipoDatos = "JSON";
+    solicitudAjax(url, (result) => {
+      if(!result.Success){
+        toastr.error(result.Message);
+      }else{
+        toastr.success("Compra anulada exitosamente");
+        $("#row_" + id).find('td:last').html("Anulada");
+      }
+    } , datos, tipoDatos, tipo);
+  });
+
   $('#tbl').DataTable({
     dom: '<"container"<"row"<"col-sm-4"B><"col-sm-4"l> <"col-sm-4"f>>><>rtip',
     buttons: [
@@ -90,7 +110,8 @@ $(document).ready(function () {
         },
         className: "btn btn-warning mb-2 mt-2 ml-2 fw-bold text-dark",
         filename: "Reporte de Compra",
-        title: "Reporte de Compra"
+        title: "Reporte de Compra",
+        messageTop: "Reporte de compra general:"
       }
     ],
     destroy: true,
